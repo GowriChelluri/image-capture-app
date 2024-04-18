@@ -1,0 +1,14 @@
+.btn{
+    height:30px;
+    width:90px;
+    padding:5px;
+    background-color: #ff66b3;
+    color:white;
+    border-width:0px;
+    border-radius:8px;
+    align-self: center;
+}
+.camera-btn-container{
+    display: flex;
+    flex-direction: column;
+}

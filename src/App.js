@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import Camera from './components/Camera';
+import ImageList from './components/ImageList';
+import './App.css'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='bg-container'>
+      <h1 style={{color:"white",fintSize:'40px'}}>Image Capture App</h1>
+      <Camera />
+      <ImageList />
     </div>
   );
-}
+};
 
 export default App;
