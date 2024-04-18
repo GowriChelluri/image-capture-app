@@ -1,21 +1,25 @@
-import React, { useRef } from 'react';
+// src/components/Camera.js
+import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { storage } from '../../firebase/firebase';
 import './index.css'
 
 const Camera = () => {
   const webcamRef = useRef(null);
+  const [showSavePopup, setShowSavePopup] = useState(false);
+  const [photoName, setPhotoName] = useState('');
 
   const capture = async () => {
     const imageSrc = webcamRef.current.getScreenshot();
+    setShowSavePopup(true);
+  };
 
-    // Get GPS location
+  const handleSavePhoto = async () => {
+    const imageSrc = webcamRef.current.getScreenshot();
     const position = await getCurrentPosition();
-
-    // Upload image to Firebase storage with location data
     const { latitude, longitude } = position.coords;
     const storageRef = storage.ref();
-    const imageName = `image_${Date.now()}.jpg`;
+    const imageName = `${photoName}_${Date.now()}.jpg`;
     const imageRef = storageRef.child(`images/${imageName}`);
     await imageRef.putString(imageSrc, 'data_url', {
       contentType: 'image/jpeg',
@@ -24,8 +28,9 @@ const Camera = () => {
         longitude: longitude.toString(),
       },
     });
-
-    alert('Image captured and uploaded successfully with GPS location!');
+    setShowSavePopup(false);
+    setPhotoName('');
+    alert('Image captured and saved successfully with GPS location!');
   };
 
   const getCurrentPosition = () => {
@@ -34,20 +39,27 @@ const Camera = () => {
     });
   };
 
-  const handleCaptureButtonClick = async () => {
-    await capture();
-  };
-
   return (
     <div className='camera-btn-container'>
       <Webcam
         audio={false}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
-        width={480}
+        width={640}
         height={480}
       />
-      <button onClick={handleCaptureButtonClick} className='btn'>Capture</button>
+      <button onClick={capture} className='btn'>Capture</button>
+      {showSavePopup && (
+        <div className="save-popup">
+          <input
+            type="text"
+            placeholder="Enter photo name"
+            value={photoName}
+            onChange={(e) => setPhotoName(e.target.value)}
+          />
+          <button onClick={handleSavePhoto}>Save</button>
+        </div>
+      )}
     </div>
   );
 };

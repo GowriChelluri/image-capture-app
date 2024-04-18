@@ -16,9 +16,10 @@ const ImageList = () => {
         for (const imageRef of result.items) {
           const url = await imageRef.getDownloadURL();
           const metadata = await imageRef.getMetadata();
-          const latitude = metadata.customMetadata ? metadata.customMetadata.latitude : 'Unknown';
-          const longitude = metadata.customMetadata ? metadata.customMetadata.longitude : 'Unknown';
-          imageUrls.push({ url, latitude, longitude });
+          const { latitude, longitude } = metadata.customMetadata;
+          const imageName = imageRef.name.split('.').slice(0, -1).join('.');
+          const timestamp = new Date(metadata.timeCreated).toLocaleString();
+          imageUrls.push({ url, latitude, longitude, name: imageName, timestamp });
         }
       });
 
@@ -31,13 +32,17 @@ const ImageList = () => {
   return (
     <div className='images-container'>
       
-      {images.map((image, index) => (
-        <div key={index} className='images-gps-container'>
-          <img src={image.url} alt={`Captured ${index + 1}`} className="captured-image" />
-          <p className='location'>Latitude: {image.latitude}</p>
-          <p className='location'>Longitude: {image.longitude}</p>
-        </div>
-      ))}
+      
+        {images.map((image, index) => (
+          <div key={index} className='images-gps-container'>
+            <img src={image.url} alt={`Captured ${index + 1}`} className='captured-image' />
+            <p className='description'>Name: {image.name}</p>
+            <p className='description'>Timestamp: {image.timestamp}</p>
+            <p className='description'>Latitude: {image.latitude}</p>
+            <p className='description'>Longitude: {image.longitude}</p>
+          </div>
+        ))}
+      
     </div>
   );
 };
